@@ -1,8 +1,2 @@
-#!/usr/bin/env bash
-# Generate a 4096-bit RSA key named "school"
-# Protected with passphrase "betty"
-# Force OpenSSH format
-# Automatically overwrite if it exists
-
-
-ssh-keygen -t rsa -b 4096 -f school -N betty -q
+#!/bin/bash
+ssh-keygen -t rsa -b 4096 -f school -N "betty" -q
