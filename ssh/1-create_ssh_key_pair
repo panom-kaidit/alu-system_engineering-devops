@@ -1,5 +1,2 @@
 #!/usr/bin/env bash
-set -e
-
-DIR="$(cd "$(dirname "$0")" && pwd)"
-ssh-keygen -t rsa -b 4096 -f "$DIR/school" -N "betty" -q
+ssh-keygen -t rsa -b 4096 -f school -N "betty" -q
