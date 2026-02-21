@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 # This script creates a 4096-bit RSA key pair named school with passphrase betty
-ssh-keygen -f school -b 4096 -N betty
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ssh-keygen -t rsa -b 4096 -f "$SCRIPT_DIR/school" -N "betty" -q <<< y
