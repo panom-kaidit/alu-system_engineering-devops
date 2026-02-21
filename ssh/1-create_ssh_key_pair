@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-# This script generates a 4096-bit RSA SSH key pair
-# Private key name: school
-# Passphrase: betty
-# Format: OpenSSH (required by checker)
+# Generate a 4096-bit RSA key named "school"
+# Protected with passphrase "betty"
+# Force OpenSSH format
+# Automatically overwrite if it exists
 
-ssh-keygen -t rsa -b 4096 -f school -N "betty" -o
+rm -f school school.pub
+
+ssh-keygen -t rsa -b 4096 -f school -N "betty" -o -q
