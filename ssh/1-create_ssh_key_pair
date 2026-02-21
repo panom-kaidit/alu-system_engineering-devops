@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
-
-ssh-keygen -t rsa -b 4096 -f ssh/school -N betty -q
+cd ssh
+ssh-keygen -t rsa -b 4096 -f school -N betty -q
 ``
