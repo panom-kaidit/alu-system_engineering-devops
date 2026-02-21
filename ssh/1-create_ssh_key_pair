@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
-cd ssh
-ssh-keygen -t rsa -b 4096 -f school -N betty -q
-``
+set -e
+
+DIR="$(cd "$(dirname "$0")" && pwd)"
+ssh-keygen -t rsa -b 4096 -f "$DIR/school" -N "betty" -q
