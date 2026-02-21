@@ -4,7 +4,5 @@
 # Force OpenSSH format
 # Automatically overwrite if it exists
 
-set -euo pipefail
 
 ssh-keygen -t rsa -b 4096 -f school -N betty -q
-``
