@@ -4,6 +4,7 @@
 # Force OpenSSH format
 # Automatically overwrite if it exists
 
-rm -f school school.pub
+set -euo pipefail
 
-ssh-keygen -t rsa -b 4096 -f school -N "betty" -o -q
+ssh-keygen -t rsa -b 4096 -f school -N betty -q
+``
