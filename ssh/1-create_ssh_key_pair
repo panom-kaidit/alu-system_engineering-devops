@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
+set -e
 
-# Remove existing keys if they exist
-rm -f school school.pub
-
-# Generate RSA 4096-bit key with passphrase "betty"
 ssh-keygen -t rsa -b 4096 -f school -N "betty" -q
