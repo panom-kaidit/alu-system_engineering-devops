@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-ssh-keygen -t rsa -b 4096 -f school -N "betty" -q
+ssh-keygen -t rsa -b 4096 -f school -N betty -q
+``
