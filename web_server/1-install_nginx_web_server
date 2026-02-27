@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Installs and configures Nginx to serve a page containing 'Holberton School' on port 80.
 set -e
 
 # Ensure script is run as root
