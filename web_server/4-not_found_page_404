@@ -1,35 +1,12 @@
 #!/usr/bin/env bash
 # Installs and configures Nginx with redirection and a custom 404 page.
-set -e
 
-apt update -y
-apt install -y nginx
+sudo apt-get update -y
+sudo apt-get install nginx -y
 
 echo "Holberton School" > /var/www/html/index.html
-echo "Ceci n'est pas une page" > /var/www/html/custom_404.html
+echo "Ceci n'est pas une page" > /var/www/html/404.html
 
-cat <<'EOF' > /etc/nginx/sites-available/default
-server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
+sudo sed -i '/listen \[::\]:80 default_server;/a \\n\terror_page 404 /404.html;\n\tlocation = /404.html {\n\t\troot /var/www/html;\n\t\tinternal;\n\t}' /etc/nginx/sites-available/default
 
-    root /var/www/html;
-    index index.html;
-
-    location /redirect_me {
-        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
-    }
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-
-    error_page 404 /custom_404.html;
-
-    location = /custom_404.html {
-        internal;
-    }
-}
-EOF
-
-service nginx restart
+sudo service nginx restart
