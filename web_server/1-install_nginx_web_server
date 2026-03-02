@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Installs and configures Nginx to serve a page containing 'Holberton School' on port 80.
-
+set -e
 # Update package list
 apt update -y
 
