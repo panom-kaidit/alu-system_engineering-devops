@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 # Installs and configures Nginx to serve a page containing 'Holberton School' on port 80.
-set -e
 
-export DEBIAN_FRONTEND=noninteractive
-apt-get update -y
-apt-get install -y nginx
+apt update -y
+apt install -y nginx
 
 echo "Holberton School" > /var/www/html/index.html
-echo "Holberton School" > /var/www/html/index.nginx-debian.html
 
 service nginx start
