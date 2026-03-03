@@ -1,7 +1,30 @@
 #!/usr/bin/env bash
 # Installs and configures Nginx to serve a page containing 'Holberton School' on port 80.
 
-sudo apt-get update -y
-sudo apt-get install -y nginx
-echo "Holberton School for the win!" | sudo tee /var/www/html/index.html
-sudo service nginx restart
+set -euo pipefail
+export DEBIAN_FRONTEND=noninteractive
+
+# Install nginx quietly
+apt-get update -y >/dev/null 2>&1
+apt-get install -y nginx >/devnull 2>&1 || apt-get install -y nginx >/dev/null 2>&1
+
+# Ensure default site is enabled and root exists
+mkdir -p /var/www/html
+rm -f /var/www/html/index.nginx-debian.html
+
+# Write EXACT string
+printf  "Holberton School" > /var/www/html/index.nginx-debian.html
+
+
+
+# Ensure the default server is active and points to /var/www/html
+# (Make it idempotent: if file exists, normalize root and index lines)
+sed -i 's|^\s*root\s\+/var/www/html;|root /var/www/html;|' /etc/nginx/sites-available/default || true
+sed -i 's|^\s*index\s\+.*|index index.html;|' /etc/nginx/sites-available/default || true
+
+# Link default site (idempotent)
+ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+
+# Validate and restart via service
+nginx -t
+service nginx restart >/dev/null 2>&1 || service nginx start >/dev/null 2>&1
