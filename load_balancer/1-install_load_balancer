@@ -1,21 +1,19 @@
 #!/usr/bin/env bash
-# Installs and configures HAProxy with round-robin load balancing
+# Install and configure HAProxy with roundrobin load balancing
 
-# Install HAProxy
-apt-get update -y
-apt-get install -y haproxy
+sudo apt-get update -y
+sudo apt-get install -y haproxy
 
-# Enable HAProxy
-echo "ENABLED=1" > /etc/default/haproxy
+if [ -f /etc/default/haproxy ]; then
+    sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy
+fi
 
-# Configure HAProxy
-cat <<EOF > /etc/haproxy/haproxy.cfg
+cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.bak
+
+cat > /etc/haproxy/haproxy.cfg <<EOF
 global
     log /dev/log local0
     log /dev/log local1 notice
-    maxconn 2000
-    user haproxy
-    group haproxy
     daemon
 
 defaults
@@ -23,31 +21,20 @@ defaults
     mode    http
     option  httplog
     option  dontlognull
-    retries 3
-    option redispatch
     timeout connect 5000
     timeout client  50000
     timeout server  50000
 
 frontend http_front
     bind *:80
-    default_backend http_back
+    default_backend web_servers
 
-backend http_back
+backend web_servers
     balance roundrobin
-    server web-01 54.86.55.58:80 check
-    server web-02 98.81.240.103:80 check
-
-listen stats
-    bind *:8404
-    stats enable
-    stats uri /haproxy?stats
-    stats refresh 10s
+    server web-01 3.83.153.109:80 check
+    server web-02 13.218.53.237:80 check
 EOF
 
-# Restart HAProxy
-service haproxy restart
+haproxy -c -f /etc/haproxy/haproxy.cfg || exit 1
 
-# Output required by checker
-echo "web-01"
-echo "web-02"
+service haproxy restart
