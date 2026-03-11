@@ -1,23 +1,16 @@
 #!/usr/bin/env bash
-# Configure HAProxy as an HTTP load balancer in front of the two web servers.
-# Must be run on the load balancer host as root or via sudo.
+# Installs HAProxy version 1.8 with the following configurations:
+#+    Enables management via the init script.
+#+    Distributes requests using a round-robin algorithm.
 
-set -e
-
-# Make sure Nginx is not binding to :80 on the load balancer
-if command -v nginx >/dev/null 2>&1; then
-    systemctl stop nginx || true
-    systemctl disable nginx || true
-fi
-
-apt-get update -y
+apt-get update
 apt-get install -y haproxy
 
-echo "ENABLED=1" > /etc/default/haproxy
+echo "ENABLED=1" >> /etc/default/haproxy
 mv /etc/haproxy/haproxy.cfg{,.original}
+touch /etc/haproxy/haproxy.cfg
 
-cat > /etc/haproxy/haproxy.cfg <<'EOF'
-global
+printf %s "global
     log /dev/log local0
     maxconn 2000
     user haproxy
@@ -42,9 +35,8 @@ listen hbnb
     balance roundrobin
     option httpclose
     option forwardfor
-    server 7033-web-01 3.88.168.171:80 check
-    server 7033-web-02 18.205.191.183:80 check
-EOF
+    server 7046-web-01 3.83.153.109:80 check
+    server 7046-web-02 13.218.53.237:80 check
+" >> /etc/haproxy/haproxy.cfg
 
-systemctl restart haproxy
-systemctl enable haproxy
+service haproxy start
