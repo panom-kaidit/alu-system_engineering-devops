@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-# config new machine server using nginx
-
+#Installs Nginx on the server
 sudo apt-get -y update
 sudo apt-get install -y nginx
 sudo chown -R "$USER":"$USER" /var/www/html
 sudo chown -R "$USER":"$USER" /etc/nginx/sites-available/default
-echo "Holberton School" > /var/www/html/index.html
+echo "Holberton School for the win!" > /var/www/html/index.html
 echo "Ceci n'est pas une page" > /var/www/html/404.html
 echo "server {
 	listen 80 default_server;
