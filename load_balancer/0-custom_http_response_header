@@ -1,15 +1,18 @@
 #!/usr/bin/env bash
-# Install nginx web server and add a custom header to the default server response
+# shellcheck disable=SC2154
+# Configure Nginx to return a custom X-Served-By header with the host name
 
-# Install Nginx silently
-sudo apt update -y > /dev/null 2>&1
-sudo apt install -y nginx > /dev/null 2>&1
+set -e
 
-# Remove any existing X-Served-By lines in the default server block
-sudo sed -i '/add_header X-Served-By/d' /etc/nginx/sites-available/default
+CONF="/etc/nginx/sites-available/default"
 
-# Add X-Served-By inside server block, after server_name _
-sudo sed -i '/server_name _;/a \    add_header X-Served-By $hostname always;' /etc/nginx/sites-available/default
+# Install Nginx
+sudo apt-get update -y >/dev/null
+sudo apt-get install -y nginx >/dev/null
 
-# Restart/reload nginx without systemd (works in Docker too)
-sudo nginx -s reload > /dev/null 2>&1 || nginx > /dev/null 2>&1
+# Ensure header is present exactly once in the default server block
+sudo sed -i '/add_header X-Served-By/d' "$CONF"
+sudo sed -i '/server_name _;/a \    add_header X-Served-By $hostname always;' "$CONF"
+
+# Restart Nginx to apply changes
+sudo service nginx restart >/dev/null
