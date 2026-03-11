@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # config new machine server using nginx
 
-apt-get -y update
-apt-get install -y nginx
+sudo apt-get -y update
+sudo apt-get install -y nginx
 sudo chown -R "$USER":"$USER" /var/www/html
 sudo chown -R "$USER":"$USER" /etc/nginx/sites-available/default
 echo "Holberton School" > /var/www/html/index.html
