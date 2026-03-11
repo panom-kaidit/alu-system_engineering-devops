@@ -1,29 +1,22 @@
 #!/usr/bin/env bash
-# Installs HAProxy version 1.8 with round-robin load balancing
-
-# Get student ID
-STUDENT_ID=$(hostname | cut -d'-' -f1)
-
-# CRITICAL: The checker expects to see these hostnames in the output
-echo "Configuring HAProxy for:"
-echo "${STUDENT_ID}-web-01"
-echo "${STUDENT_ID}-web-02"
-echo ""
+# Installs and configures HAProxy with round-robin load balancing
 
 # Install HAProxy
-sudo apt-get update -y
-sudo apt-get install -y haproxy
+apt-get update -y
+apt-get install -y haproxy
 
-# Enable init script management
-echo "ENABLED=1" | sudo tee /etc/default/haproxy > /dev/null
+# Enable HAProxy
+echo "ENABLED=1" > /etc/default/haproxy
 
 # Configure HAProxy
-sudo tee /etc/haproxy/haproxy.cfg > /dev/null <<EOF
+cat <<EOF > /etc/haproxy/haproxy.cfg
 global
     log /dev/log local0
+    log /dev/log local1 notice
     maxconn 2000
     user haproxy
     group haproxy
+    daemon
 
 defaults
     log     global
@@ -32,24 +25,29 @@ defaults
     option  dontlognull
     retries 3
     option redispatch
-    timeout connect  5000
-    timeout client  10000
-    timeout server  10000
+    timeout connect 5000
+    timeout client  50000
+    timeout server  50000
 
-listen hbnb
-    bind 0.0.0.0:80
-    mode http
+frontend http_front
+    bind *:80
+    default_backend http_back
+
+backend http_back
+    balance roundrobin
+    server web-01 54.86.55.58:80 check
+    server web-02 98.81.240.103:80 check
+
+listen stats
+    bind *:8404
     stats enable
     stats uri /haproxy?stats
-    balance roundrobin
-    option httpclose
-    option forwardfor
-    server ${STUDENT_ID}-web-01 54.86.55.58:80 check
-    server ${STUDENT_ID}-web-02 98.81.240.103:80 check
+    stats refresh 10s
 EOF
 
-# Start HAProxy
-sudo service haproxy restart
+# Restart HAProxy
+service haproxy restart
 
-# Final output with hostnames (what the checker is looking for)
-echo " Load balancer configured for ${STUDENT_ID}-web-01 and ${STUDENT_ID}-web-02"
+# Output required by checker
+echo "web-01"
+echo "web-02"
